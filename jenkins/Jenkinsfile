@@ -1,47 +1,47 @@
 pipeline {
     agent any
     stages {
-        stage('Install Maven') {
-            steps {
-                script {
-                    // Check if Maven is already present (optional optimization)
-                    try {
-                        sh 'mvn -v'
-                        echo "Maven already installed, skipping installation."
-                    } catch (Exception e) {
-                        echo "Maven not found, proceeding with installation."
+        // stage('Install Maven') {
+        //     steps {
+        //         script {
+        //             // Check if Maven is already present (optional optimization)
+        //             try {
+        //                 sh 'mvn -v'
+        //                 echo "Maven already installed, skipping installation."
+        //             } catch (Exception e) {
+        //                 echo "Maven not found, proceeding with installation."
 
-                        // Install wget if not present
-                        sh 'apt update && apt install -y wget'
+        //                 // Install wget if not present
+        //                 sh 'apt update && apt install -y wget'
 
-                        // Download Maven
-                        sh 'wget https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz -O /tmp/apache-maven-3.9.11-bin.tar.gz'
+        //                 // Download Maven
+        //                 sh 'wget https://archive.apache.org/dist/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz -O /tmp/apache-maven-3.9.11-bin.tar.gz'
 
-                        // Create directory and extract
-                        sh 'sudo mkdir -p /opt/apache-maven-3.9.11' // Ensure /opt exists and is writable, or use a user-writable location like /usr/local/share
-                        sh 'sudo tar -xvzf /tmp/apache-maven-3.9.11-bin.tar.gz -C /opt/'
-                        sh 'sudo mv /opt/apache-maven-3.9.11-bin /opt/apache-maven-3.9.11' // Rename the extracted folder
+        //                 // Create directory and extract
+        //                 sh 'sudo mkdir -p /opt/apache-maven-3.9.11' // Ensure /opt exists and is writable, or use a user-writable location like /usr/local/share
+        //                 sh 'sudo tar -xvzf /tmp/apache-maven-3.9.11-bin.tar.gz -C /opt/'
+        //                 sh 'sudo mv /opt/apache-maven-3.9.11-bin /opt/apache-maven-3.9.11' // Rename the extracted folder
 
-                        // Clean up
-                        sh 'rm /tmp/apache-maven-3.9.11-bin.tar.gz'
+        //                 // Clean up
+        //                 sh 'rm /tmp/apache-maven-3.9.11-bin.tar.gz'
 
-                        // Set PATH for the current build environment
-                        // This is crucial. We define MAVEN_HOME and add it to PATH
-                        // within the scope of this Jenkinsfile execution.
-                        // The `withEnv` block ensures these vars are set for subsequent steps.
-                        withEnv([
-                            "M2_HOME=/opt/apache-maven-3.9.11",
-                            "MAVEN_HOME=/opt/apache-maven-3.9.11",
-                            "PATH=/opt/apache-maven-3.9.11/bin:${env.PATH}"
-                        ]) {
-                            // Verify installation within this environment
-                            sh 'mvn -v'
-                            echo "Maven 3.9.11 installed and configured for this build."
-                        }
-                    }
-                }
-            }
-        }
+        //                 // Set PATH for the current build environment
+        //                 // This is crucial. We define MAVEN_HOME and add it to PATH
+        //                 // within the scope of this Jenkinsfile execution.
+        //                 // The `withEnv` block ensures these vars are set for subsequent steps.
+        //                 withEnv([
+        //                     "M2_HOME=/opt/apache-maven-3.9.11",
+        //                     "MAVEN_HOME=/opt/apache-maven-3.9.11",
+        //                     "PATH=/opt/apache-maven-3.9.11/bin:${env.PATH}"
+        //                 ]) {
+        //                     // Verify installation within this environment
+        //                     sh 'mvn -v'
+        //                     echo "Maven 3.9.11 installed and configured for this build."
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         stage('Build') {
             steps {
                 sh 'mvn -B -DskipTests clean package'
