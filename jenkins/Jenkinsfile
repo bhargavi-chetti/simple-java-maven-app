@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Install Maven') {
             steps {
-                scripts {
+                script {
                     // Check if Maven is already present (optional optimization)
                     try {
                         sh 'mvn -v'
